@@ -5,6 +5,7 @@ import MinHS.Pretty
 import qualified Text.PrettyPrint.ANSI.Leijen as PP
 import Debug.Trace
 import Text.Show.Functions ()
+import Text.Parsec.Error (Message(Message))
 
 type VEnv = E.Env Value
 
@@ -102,10 +103,10 @@ msStep (Mcal stack vEnv currentExpr) = case currentExpr of
   CurrentstateExp(App (Prim Tail) e2) -> case e2 of
     Con "Nil" -> error "list is empty"
     App (App (Con "Cons") (Num n)) e2 -> case e2 of
-          Con "Nil" -> MSevaluate stack vEnv currentExpr
+          Con "Nil" -> MEval stack vEnv currentExpr
                         where
                           currentExp = CurrentStateVal (Cons n Nil)
   
   CurrentstateExp(App (Prim Null) e2) -> case e2 of
-    Con "Nil" ->  MSevaluate stack vEnv (CurrentStateVal (B True))
-    _ ->  MSevaluate stack vEnv (CurrentStateVal (B False))
+    Con "Nil" ->  MEval stack vEnv (CurrentStateVal (B True))
+    _ ->  MEval stack vEnv (CurrentStateVal (B False))
